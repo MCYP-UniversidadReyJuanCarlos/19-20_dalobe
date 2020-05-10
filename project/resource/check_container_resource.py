@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 
-from project.check_container import Check
+from project.service.check_container_service import Check
 
 app = Flask(__name__)
 
@@ -10,10 +10,10 @@ def hello_world():
     return send_response()
 
 
-@app.route('/check')
+@app.route('/containers/check')
 def check():
     check = Check()
-    return jsonify({"result": check.check()}), 200
+    return jsonify({"result": check.check('fbc7f167a0eb527b244d64e3f67ab5246757b41c6afadac9839adb2c99f46c8e')}), 200
 
 
 @app.route("/health")
