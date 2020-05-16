@@ -14,9 +14,3 @@ class Check_4_1:
         else:
             return 'OK'
 
-    def fix_container(container):
-        f = open('/tmp/Dockefile', mode='wt', encoding='utf-8')
-        f.write("FROM" + str(container.image) + "\n")
-        f.write("RUN useradd -d /home/username -m -s /bin/bash username" + "\n")
-        f.write("USER username" + "\n")
-        f.close()
