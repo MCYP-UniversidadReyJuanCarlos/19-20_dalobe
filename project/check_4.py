@@ -6,11 +6,27 @@ class Check_4_1:
     def evaluate_container(container):
         inspection = APIClient().inspect_container(container.name)
         user = (inspection.get("Config").get("User"))
-        # print(container.exec_run("/bin/cat /proc/1/status | grep Uid | awk '{print $3}'"))
-        if user == "root":
-            return 'KO'
-        elif user == "":
-            return 'KO'
+        if user == 'root':
+            return {'result': 'KO',
+                    'code': 'CONTAINER_RUNNING_AS_ROOT',
+                    'description': 'It is a good practice to run the container as a non-root user, if possible.'}
+        elif user is None or user == '':
+            return {'result': 'KO',
+                    'code': 'NO_USER_FOUND_RUNNING_CONTAINER',
+                    'description': 'It is a good practice to run the container as a non-root user, if possible.'}
         else:
-            return 'OK'
+            return {'result': 'OK'}
 
+
+class Check_4_6:
+
+    def evaluate_container(container):
+        inspection = APIClient().inspect_container(container.name)
+        healthcheck = (inspection.get("Config").get("Healthcheck"))
+        if healthcheck is None or healthcheck == '':
+            return {'result': 'KO',
+                    'code': 'NO_HEALTHCHECK_CONFIGURED',
+                    'description': 'You should add the HEALTHCHECK instruction to your Docker container images in '
+                                   'order to ensure that health checks are executed against running containers.'}
+        else:
+            return {'result': 'OK'}
