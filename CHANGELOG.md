@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Proper README, CHANGELOG, CONTRIBUTING and LICENSE documentation.
+- Open api specification 1.0.0.
 
 ### Security
-- Flask dependency updated to 1.0.0
+- Flask dependency updated to 1.0.0.
