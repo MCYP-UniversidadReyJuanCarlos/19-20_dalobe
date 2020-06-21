@@ -15,7 +15,7 @@ for hardening your containers environment.
 
 ## Contributing 🖇️
 
-Please read [CONTRIBUTING.md] for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Versioning 📌
 
@@ -23,7 +23,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## Change Log 📌
 
-[CHANGELOG.md](Changelog.md) for details
+[CHANGELOG.md](CHANGELOG.md) for details
 
 ## Author ✒️
 
