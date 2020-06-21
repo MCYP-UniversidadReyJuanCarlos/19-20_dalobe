@@ -1,6 +1,6 @@
 # Project Title
 [![SDS-master Actions Status]
-(https://github.com/MCYP-UniversidadReyJuanCarlos/19-20_dalobe/workflows/python_application/badge.svg)](https://github.com/MCYP-UniversidadReyJuanCarlos/19-20_dalobe/actions)
+(https://github.com/MCYP-UniversidadReyJuanCarlos/19-20_dalobe/workflows/python-app/badge.svg)](https://github.com/MCYP-UniversidadReyJuanCarlos/19-20_dalobe/actions)
 
 SDS is a tool to detect and implement security best practices over docker containers. 
 The gaol of this application is scan docker containers looking for potential security issues
