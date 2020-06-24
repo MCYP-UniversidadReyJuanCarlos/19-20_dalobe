@@ -7,4 +7,4 @@ class ContainerPayload:
         self.status = container.status
 
     def json(self):
-        return [self.__dict__]
+        return self.__dict__
