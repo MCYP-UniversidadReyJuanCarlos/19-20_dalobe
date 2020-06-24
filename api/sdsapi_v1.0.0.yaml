@@ -7,8 +7,8 @@ info:
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "localhost"
-basePath: "/"
+host: "localhost:5000"
+basePath: "/sds"
 schemes:
 - "http"
 paths:
@@ -39,6 +39,23 @@ paths:
       responses:
         "200":
           description: "successful operation"
+  /containers:
+    get:
+      summary: "List containers running on host"
+      description: "Returns container findings"
+      operationId: "get containers"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Container"
+definitions:
+  Container:
+    properties:
+      id:
+        type: "string"
 externalDocs:
   description: "Find out more about Swagger"
   url: "http://swagger.io"
