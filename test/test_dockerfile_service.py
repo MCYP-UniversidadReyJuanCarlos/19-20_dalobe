@@ -1,6 +1,6 @@
 import unittest
 
-from project.service.dockerfile_service import DockerfileParser
+from project.service.parse_dockerfile_service import DockerfileParser
 
 
 class MyTestCase(unittest.TestCase):
