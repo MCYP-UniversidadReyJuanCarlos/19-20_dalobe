@@ -12,8 +12,8 @@ app = Flask(__name__)
 
 @app.route("/sds/health")
 @cross_origin()
-def health():
-    return jsonify({"status": "UP"}), 200
+def hello_world():
+    return jsonify({"message": "Running..."}), 200
 
 
 @app.route('/sds/containers')
@@ -24,9 +24,16 @@ def get_containers():
     return jsonify(json_containers), 200
 
 
-@app.route('/sds/containers/<id>/check')
+@app.route('/sds/containers/<container_id>/check')
 @cross_origin()
 def check_container(container_id):
+    check = Check()
+    return jsonify({"result": check.check_and_fix(container_id)}), 200
+
+
+@app.route('/sds/containers/<container_id>/fix')
+@cross_origin()
+def check_and_fix_container(container_id):
     check = Check()
     return jsonify({"result": check.check_and_fix(container_id)}), 200
 

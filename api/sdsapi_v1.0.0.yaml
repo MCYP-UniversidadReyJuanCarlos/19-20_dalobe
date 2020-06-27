@@ -29,6 +29,23 @@ paths:
       responses:
         "200":
           description: "successful operation"
+  /containers/{id}/fix:
+    get:
+      summary: "Fix container by ID"
+      description: "Returns container findings and create a Dockerfile with the fixes"
+      operationId: "fixContainerById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of pet to return"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "200":
+          description: "successful operation"
   /health:
     get:
       summary: "Check application status"
