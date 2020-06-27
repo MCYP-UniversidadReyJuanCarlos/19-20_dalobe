@@ -10,28 +10,12 @@ from project.service.containers_service import ContainerService
 app = Flask(__name__)
 
 
-<<<<<<< HEAD
 @app.route("/sds/health")
 @cross_origin()
-=======
-@app.route('/')
 def hello_world():
-    return send_response()
-
-
-@app.route('/containers/<id>/check')
-def check(id):
-    check = Check()
-    return jsonify({"evaluation": check.check_and_fix(id)}), 200
-
-
-@app.route("/health")
->>>>>>> Add healt check evalation rule
-def health():
     return jsonify({"message": "Running..."}), 200
 
 
-<<<<<<< HEAD
 @app.route('/sds/containers')
 @cross_origin()
 def get_containers():
@@ -40,15 +24,18 @@ def get_containers():
     return jsonify(json_containers), 200
 
 
-@app.route('/sds/containers/<id>/check')
+@app.route('/sds/containers/<container_id>/check')
 @cross_origin()
 def check_container(container_id):
     check = Check()
     return jsonify({"result": check.check_and_fix(container_id)}), 200
-=======
-def send_response():
-    return jsonify({"message": "Running..."}), 200
->>>>>>> Add healt check evalation rule
+
+
+@app.route('/sds/containers/<container_id>/fix')
+@cross_origin()
+def check_and_fix_container(container_id):
+    check = Check()
+    return jsonify({"result": check.check_and_fix(container_id)}), 200
 
 
 if __name__ == '__main__':

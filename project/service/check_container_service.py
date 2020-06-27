@@ -2,9 +2,18 @@ import docker
 
 from project.check_4 import Check_4_1, Check_4_6
 from project.fix_4 import Fix_4_1, Fix_4_6
+from project.infrastracture.make_docker_file import Make_docker_file
 
 
 class Check:
+
+    def check(self, container_id):
+        container = self.get_container(container_id)
+        if not container:
+            return 'Error: no container found'
+        check_result = self.check_container(container[0])
+
+        return check_result
 
     def check_and_fix(self, container_id):
         container = self.get_container(container_id)
@@ -12,6 +21,7 @@ class Check:
             return 'Error: no container found'
         check_result = self.check_container(container[0])
         fixes = self.fix_container(container[0],check_result)
+        Make_docker_file.write_docker_file(container[0], fixes)
 
         return check_result
 
@@ -29,6 +39,7 @@ class Check:
 
     def fix_container(self, container, check_result):
         check_4_1 = check_result.get('4_1')
+        str = ''
         if check_4_1.get('evaluation') == 'KO':
             str = Fix_4_1.fix_container(container)
         check_4_6 = check_result.get('4_6')
