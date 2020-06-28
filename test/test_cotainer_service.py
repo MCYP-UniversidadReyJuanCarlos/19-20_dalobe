@@ -4,7 +4,7 @@ from unittest import mock
 from project.service.containers_service import ContainerService
 
 
-class MyTestCase(unittest.TestCase):
+class Container_Service_Test(unittest.TestCase):
     container_list = [
         {
             "Id": "43dcdb92c72d71fde474bc980755bf5e2ef5edd1b9d9b4347455a97650d1db60",

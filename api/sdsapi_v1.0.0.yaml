@@ -12,40 +12,6 @@ basePath: "/sds"
 schemes:
 - "http"
 paths:
-  /containers/{id}/check:
-    get:
-      summary: "Check container by ID"
-      description: "Returns container findings"
-      operationId: "checkContainerById"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "id"
-        in: "path"
-        description: "ID of pet to return"
-        required: true
-        type: "integer"
-        format: "int64"
-      responses:
-        "200":
-          description: "successful operation"
-  /containers/{id}/fix:
-    get:
-      summary: "Fix container by ID"
-      description: "Returns container findings and create a Dockerfile with the fixes"
-      operationId: "fixContainerById"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "id"
-        in: "path"
-        description: "ID of pet to return"
-        required: true
-        type: "integer"
-        format: "int64"
-      responses:
-        "200":
-          description: "successful operation"
   /health:
     get:
       summary: "Check application status"
@@ -68,10 +34,71 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/Container"
+  /containers/{id}/check:
+    get:
+      summary: "Check container by ID"
+      description: "Returns container findings"
+      operationId: "checkContainerById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "id of docker container"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "string"
+  /containers/{id}/fix:
+    get:
+      summary: "Fix container by ID"
+      description: "Returns container findings and create a Dockerfile with the fixes"
+      operationId: "fixContainerById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "id of docker container"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "string"
+  /images/analyse-dockerfile:
+    post:
+      summary: "Analyse Dockerfile"
+      description: ""
+      operationId: "analyseDockerfile"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Dockerfile"
+        required: true
+        schema:
+          $ref: "#/definitions/Dockerfile"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "string"
 definitions:
   Container:
     properties:
       id:
+        type: "string"
+  Dockerfile:
+    properties:
+      dockerFile:
         type: "string"
 externalDocs:
   description: "Find out more about Swagger"
