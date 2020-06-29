@@ -2,11 +2,11 @@
 
 class Make_docker_file:
 
-    def write_docker_file_from_dynamic(container,fixes):
+    def write_docker_file_from_dynamic(container,dockerfile_fixes):
         image = container.image
         f = open('output/Dockerfile', mode='wt', encoding='utf-8')
         f.write("FROM " + str(image.attrs.get('RepoTags')[0]) + "\n\n")
-        f.write(fixes)
+        f.write(dockerfile_fixes)
         f.close()
 
     def write_docker_file_from_static(instructions, dockerfile_fixes):
