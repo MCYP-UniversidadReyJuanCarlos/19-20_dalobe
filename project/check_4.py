@@ -17,6 +17,15 @@ class Check_4_1:
         else:
             return {'evaluation': 'OK'}
 
+    def evaluate_dockerfile(instructions):
+        user_instruction = list(filter(lambda x: x['instruction'] == 'USER', instructions))
+        if not user_instruction:
+            return {'evaluation': 'KO',
+                    'code': 'DOCKERFILE_WITHOUT_USER',
+                    'description': 'It is a good practice to create a user for each container image different from '
+                                   'default (root).'}
+        return {'evaluation': 'OK'}
+
 
 class Check_4_6:
 
@@ -30,3 +39,12 @@ class Check_4_6:
                                    'order to ensure that health checks are executed against running containers.'}
         else:
             return {'evaluation': 'OK'}
+
+    def evaluate_dockerfile(instructions):
+        user_instruction = list(filter(lambda x: x['instruction'] == 'HEALTHCHECK', instructions))
+        if not user_instruction:
+            return {'evaluation': 'KO',
+                    'code': 'DOCKERFILE_WITHOUT_HEALTHCHECK',
+                    'description': 'It is a good practice to create a healthcheck in the Dockerfile.'}
+        return {'evaluation': 'OK'}
+

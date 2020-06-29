@@ -21,7 +21,7 @@ class Check:
             return 'Error: no container found'
         check_result = self.check_container(container[0])
         fixes = self.fix_container(container[0],check_result)
-        Make_docker_file.write_docker_file(container[0], fixes)
+        Make_docker_file.write_docker_file_from_dynamic(container[0], fixes)
 
         return check_result
 

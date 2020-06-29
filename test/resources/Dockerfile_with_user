@@ -1,0 +1,9 @@
+FROM alpine:3.4
+
+RUN useradd -d /home/username -m -s /bin/bash username
+USER username
+
+RUN apk update
+# test comments
+RUN apk add vim
+RUN apk add curl

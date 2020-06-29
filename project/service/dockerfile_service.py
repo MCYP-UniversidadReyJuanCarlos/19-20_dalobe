@@ -1,7 +1,41 @@
-import docker
-
 import re
 
+from project.check_4 import Check_4_1, Check_4_6
+from project.fix_4 import Fix_4_1, Fix_4_6
+from project.infrastracture.make_docker_file import Make_docker_file
+
+
+class DockerfileService:
+
+    def check_dockerfile(self, dockerfile_path):
+        instructions = DockerfileService.parse_dockerfile(self, dockerfile_path)
+        return DockerfileService.evaluate_dockerfile(self, instructions)
+
+    def check_and_fix_dockerfile(self, dockerfile_path):
+        instructions = DockerfileService.parse_dockerfile(self,dockerfile_path)
+        check_result = DockerfileService.evaluate_dockerfile(self, instructions)
+        dockerfile_fixes = DockerfileService.fix_dockerfile(self,check_result)
+        Make_docker_file.write_docker_file_from_static(instructions, dockerfile_fixes)
+        return check_result
+
+    def parse_dockerfile(self, dockerfile_path):
+        parser = DockerfileParser(dockerfile_path)
+        instructions = parser.structure()
+        return instructions
+
+    def evaluate_dockerfile(self,instructions):
+        return [{'4_1': Check_4_1.evaluate_dockerfile(instructions),
+                '4_6': Check_4_6.evaluate_dockerfile(instructions)}]
+
+    def fix_dockerfile(self, check_result):
+        fix_dockerfile = []
+        user_check_result_failed = list(filter(lambda x: x['4_1']['evaluation'] == 'KO', check_result))
+        if user_check_result_failed:
+            [fix_dockerfile.append(o) for o in Fix_4_1.fix_dockerfile(self)]
+        healthcheck_check_result_failed = list(filter(lambda x: x['4_6']['evaluation'] == 'KO', check_result))
+        if healthcheck_check_result_failed:
+            [fix_dockerfile.append(o) for o in Fix_4_6.fix_dockerfile(self)]
+        return fix_dockerfile
 
 class DockerfileParser:
     def __init__(self, fileobj):
