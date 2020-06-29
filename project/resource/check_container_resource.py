@@ -46,14 +46,21 @@ def check_and_fix_container(container_id):
     return jsonify({"result": check.check_and_fix(container_id)}), 200
 
 
-@app.route('/sds/images/analyse-dockerfile', methods=['POST'])
+@app.route('/sds/images/dockerfile/check', methods=['POST'])
 @cross_origin()
-def post_analyse_dockerfile():
+def post_check_dockerfile():
     dockerfile_path = request.get_json().get('dockerFile')
     dockerfile_service = DockerfileService()
     dockerfile_service.check_dockerfile(dockerfile_path)
     return jsonify({"dockerFile": dockerfile_path})
 
+@app.route('/sds/images/dockerfile/fix', methods=['POST'])
+@cross_origin()
+def post_fix_dockerfile():
+    dockerfile_path = request.get_json().get('dockerFile')
+    dockerfile_service = DockerfileService()
+    dockerfile_service.check_and_fix_dockerfile(dockerfile_path)
+    return jsonify({"dockerFile": dockerfile_path})
 
 if __name__ == '__main__':
     app.debug = True

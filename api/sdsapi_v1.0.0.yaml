@@ -70,7 +70,28 @@ paths:
           description: "successful operation"
           schema:
             type: "string"
-  /images/analyse-dockerfile:
+  /images/dockerfile/check:
+    post:
+      summary: "Analyse Dockerfile"
+      description: ""
+      operationId: "analyseDockerfile"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Dockerfile"
+        required: true
+        schema:
+          $ref: "#/definitions/Dockerfile"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "string"
+  /images/dockerfile/fix:
     post:
       summary: "Analyse Dockerfile"
       description: ""

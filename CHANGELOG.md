@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New endpoint to fix container
 - Healthcheck fix
 - Add dockerfile parser
+- Fix dockerfile
 
 ### Security
 - Flask dependency updated to 1.0.0.

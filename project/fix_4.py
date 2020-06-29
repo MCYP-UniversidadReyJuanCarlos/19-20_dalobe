@@ -12,12 +12,11 @@ class Fix_4_1:
             'instruction': 'RUN',
             'content': 'RUN useradd -d /home/username -m -s /bin/bash username \n',
             'value': 'useradd -d /home/username -m -s /bin/bash username \n'
-        },
-            {
-                'instruction': 'RUN',
-                'content': 'RUN useradd -d /home/username -m -s /bin/bash username \n',
-                'value': 'useradd -d /home/username -m -s /bin/bash username \n'
-            }]
+        },{
+            'instruction': 'USER',
+            'content': 'RUN username \n',
+            'value': 'username \n'
+        }]
 
 
 class Fix_4_6:

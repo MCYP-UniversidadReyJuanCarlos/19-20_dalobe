@@ -37,15 +37,36 @@ class Dockerfile_Service_Test(unittest.TestCase):
         user_check_result = list(filter(lambda x: x['4_1']['evaluation'] == 'OK', result))
         self.assertEqual(len(user_check_result),1)
 
-    def test_given_a_dockerfile_without_user_when_fix_then_instruction_is_returned(self):
+    def test_given_a_dockerfile_without_user_when_check_and_fix_then_KO(self):
         result = DockerfileService.check_and_fix_dockerfile(self,'test/resources/Dockerfile_test2')
-        print(result)
+        user_check_result = list(filter(lambda x: x['4_1']['evaluation'] == 'KO', result))
+        self.assertEqual(len(user_check_result),1)
 
-    def test_given_a_dockerfile_with_user_when_check_then_OK(self):
-        result = DockerfileService.check_dockerfile(self,'test/resources/Dockerfile_with_user')
+    def test_given_a_dockerfile_with_user_when_check_and_fix_then_OK(self):
+        result = DockerfileService.check_and_fix_dockerfile(self,'test/resources/Dockerfile_with_user')
         user_check_result = list(filter(lambda x: x['4_1']['evaluation'] == 'OK', result))
         self.assertEqual(len(user_check_result),1)
 
+    def test_given_a_dockerfile_without_user_when_fix_then_instruction_with_user_is_generated(self):
+        instructions = DockerfileService.parse_dockerfile(self,'test/resources/Dockerfile_test2')
+        check_result = DockerfileService.evaluate_dockerfile(self, instructions)
+        result = DockerfileService.fix_dockerfile(self, check_result)
+        user_instruction = list(filter(lambda x: x['instruction'] == 'USER', result))
+        user_add_instruction = list(filter(lambda x: x['instruction'] == 'RUN' and x['value'].startswith( 'useradd' ), result))
+        self.assertEqual(len(user_instruction),1)
+        self.assertEqual(len(user_add_instruction),1)
+
+    def test_given_a_dockerfile_with_user_when_check_and_fix_then_OK(self):
+        result = DockerfileService.check_and_fix_dockerfile(self,'test/resources/Dockerfile_with_user')
+        user_check_result = list(filter(lambda x: x['4_1']['evaluation'] == 'OK', result))
+        self.assertEqual(len(user_check_result),1)
+
+    def test_given_a_dockerfile_without_healthcheck_when_fix_then_instruction_with_healthcheck_is_generated(self):
+        instructions = DockerfileService.parse_dockerfile(self,'test/resources/Dockerfile_test2')
+        check_result = DockerfileService.evaluate_dockerfile(self, instructions)
+        result = DockerfileService.fix_dockerfile(self, check_result)
+        healthcheck_instruction = list(filter(lambda x: x['instruction'] == 'HEALTHCHECK', result))
+        self.assertEqual(len(healthcheck_instruction),1)
 
 if __name__ == '__main__':
     unittest.main()

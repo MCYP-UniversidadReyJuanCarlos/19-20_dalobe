@@ -2,18 +2,26 @@ import re
 
 from project.check_4 import Check_4_1, Check_4_6
 from project.fix_4 import Fix_4_1, Fix_4_6
+from project.infrastracture.make_docker_file import Make_docker_file
 
 
 class DockerfileService:
 
     def check_dockerfile(self, dockerfile_path):
-        parser = DockerfileParser(dockerfile_path)
-        instructions = parser.structure()
+        instructions = DockerfileService.parse_dockerfile(self, dockerfile_path)
         return DockerfileService.evaluate_dockerfile(self, instructions)
 
     def check_and_fix_dockerfile(self, dockerfile_path):
-        check_result = DockerfileService.check_dockerfile(self,dockerfile_path)
-        return DockerfileService.fix_dockerfile(self,check_result)
+        instructions = DockerfileService.parse_dockerfile(self,dockerfile_path)
+        check_result = DockerfileService.evaluate_dockerfile(self, instructions)
+        dockerfile_fixes = DockerfileService.fix_dockerfile(self,check_result)
+        Make_docker_file.write_docker_file_from_static(instructions, dockerfile_fixes)
+        return check_result
+
+    def parse_dockerfile(self, dockerfile_path):
+        parser = DockerfileParser(dockerfile_path)
+        instructions = parser.structure()
+        return instructions
 
     def evaluate_dockerfile(self,instructions):
         return [{'4_1': Check_4_1.evaluate_dockerfile(instructions),
