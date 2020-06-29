@@ -12,7 +12,7 @@ class DockerfileService:
         return DockerfileService.evaluate_dockerfile(self, instructions)
 
     def check_and_fix_dockerfile(self, dockerfile_path):
-        instructions = DockerfileService.parse_dockerfile(self,dockerfile_path)
+        instructions = DockerfileService.parse_dockerfile(self, dockerfile_path)
         check_result = DockerfileService.evaluate_dockerfile(self, instructions)
         dockerfile_fixes = DockerfileService.get_dockerfile_fixes(self, check_result)
         Make_docker_file.write_docker_file_from_static(instructions, dockerfile_fixes)
@@ -23,9 +23,9 @@ class DockerfileService:
         instructions = parser.structure()
         return instructions
 
-    def evaluate_dockerfile(self,instructions):
+    def evaluate_dockerfile(self, instructions):
         return [{'4_1': Check_4_1.evaluate_dockerfile(instructions),
-                '4_6': Check_4_6.evaluate_dockerfile(instructions)}]
+                 '4_6': Check_4_6.evaluate_dockerfile(instructions)}]
 
     def get_dockerfile_fixes(self, check_result):
         fix_dockerfile = []
@@ -36,6 +36,7 @@ class DockerfileService:
         if healthcheck_check_result_failed:
             [fix_dockerfile.append(o) for o in Fix_4_6.fix_dockerfile(self)]
         return fix_dockerfile
+
 
 class DockerfileParser:
     def __init__(self, fileobj):
