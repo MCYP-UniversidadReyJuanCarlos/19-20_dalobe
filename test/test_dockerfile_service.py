@@ -50,7 +50,7 @@ class Dockerfile_Service_Test(unittest.TestCase):
     def test_given_a_dockerfile_without_user_when_fix_then_instruction_with_user_is_generated(self):
         instructions = DockerfileService.parse_dockerfile(self,'test/resources/Dockerfile_test2')
         check_result = DockerfileService.evaluate_dockerfile(self, instructions)
-        result = DockerfileService.fix_dockerfile(self, check_result)
+        result = DockerfileService.get_dockerfile_fixes(self, check_result)
         user_instruction = list(filter(lambda x: x['instruction'] == 'USER', result))
         user_add_instruction = list(filter(lambda x: x['instruction'] == 'RUN' and x['value'].startswith( 'useradd' ), result))
         self.assertEqual(len(user_instruction),1)
@@ -64,7 +64,7 @@ class Dockerfile_Service_Test(unittest.TestCase):
     def test_given_a_dockerfile_without_healthcheck_when_fix_then_instruction_with_healthcheck_is_generated(self):
         instructions = DockerfileService.parse_dockerfile(self,'test/resources/Dockerfile_test2')
         check_result = DockerfileService.evaluate_dockerfile(self, instructions)
-        result = DockerfileService.fix_dockerfile(self, check_result)
+        result = DockerfileService.get_dockerfile_fixes(self, check_result)
         healthcheck_instruction = list(filter(lambda x: x['instruction'] == 'HEALTHCHECK', result))
         self.assertEqual(len(healthcheck_instruction),1)
 

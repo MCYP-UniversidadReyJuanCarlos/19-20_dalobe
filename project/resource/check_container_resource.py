@@ -1,11 +1,9 @@
-import json
-
 from flask import Flask, jsonify, request
 from flask_cors import cross_origin
 
 from project.resource.payload.container_resource_payload import ContainerPayload
 from project.service.container_service import Check
-from project.service.containers_service import ContainerService
+from project.service.containers_service import get_containers
 from project.service.dockerfile_service import DockerfileService
 
 app = Flask(__name__)
@@ -20,7 +18,7 @@ def get_healthcheck():
 @app.route('/sds/containers')
 @cross_origin()
 def get_containers():
-    containers_payload = [ContainerPayload(v) for v in ContainerService().get_containers()]
+    containers_payload = [ContainerPayload(v) for v in get_containers()]
     json_containers = [o.json() for o in containers_payload]
     return jsonify(json_containers), 200
 

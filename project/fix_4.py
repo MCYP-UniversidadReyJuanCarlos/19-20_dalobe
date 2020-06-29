@@ -3,9 +3,6 @@ import shutil
 
 class Fix_4_1:
 
-    def fix_container(container):
-        return 'RUN useradd -d /home/username -m -s /bin/bash username \nUSER username \n\n'
-
     def fix_dockerfile(self):
         # 'RUN useradd -d /home/username -m -s /bin/bash username \nUSER username \n\n'
         return [{
@@ -21,11 +18,8 @@ class Fix_4_1:
 
 class Fix_4_6:
 
-    def fix_container(container):
-        shutil.copyfile('../../templates/docker-healthcheck', '../../output/docker-healthcheck')
-        return 'COPY docker-healthcheck /usr/local/bin/ \nHEALTHCHECK CMD ["docker-healthcheck"]\n'
-
     def fix_dockerfile(self):
+        shutil.copyfile('templates/docker-healthcheck', 'output/docker-healthcheck')
         return [{
             'instruction': 'COPY',
             'content': 'COPY docker-healthcheck /usr/local/bin/ \n',

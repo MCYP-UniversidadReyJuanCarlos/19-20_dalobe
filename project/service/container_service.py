@@ -3,6 +3,7 @@ import docker
 from project.check_4 import Check_4_1, Check_4_6
 from project.fix_4 import Fix_4_1, Fix_4_6
 from project.infrastracture.make_docker_file import Make_docker_file
+from project.service.dockerfile_service import DockerfileService
 
 
 class Check:
@@ -20,7 +21,7 @@ class Check:
         if not container:
             return 'Error: no container found'
         check_result = self.check_container(container[0])
-        fixes = self.fix_container(container[0],check_result)
+        fixes = DockerfileService.get_dockerfile_fixes(check_result)
         Make_docker_file.write_docker_file_from_dynamic(container[0], fixes)
 
         return check_result
@@ -37,13 +38,6 @@ class Check:
         return {'4_1': Check_4_1.evaluate_container(container),
                 '4_6': Check_4_6.evaluate_container(container)}
 
-    def fix_container(self, container, check_result):
-        check_4_1 = check_result.get('4_1')
-        str = ''
-        if check_4_1.get('evaluation') == 'KO':
-            str = Fix_4_1.fix_container(container)
-        check_4_6 = check_result.get('4_6')
-        if check_4_6.get('evaluation') == 'KO':
-            str = str + Fix_4_6.fix_container(container)
-        return str
+
+
 
