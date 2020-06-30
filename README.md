@@ -13,6 +13,10 @@ for hardening your containers environment.
 * [Python](https://www.python.org/) - Python
 * [Flask](https://www.fullstackpython.com/flask.html) - Python web framework
 
+## Architecture 🛠️
+
+![cover image](resources/SDS_architecture.png)
+
 ## Contributing 🖇️
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
