@@ -1,7 +1,7 @@
 import unittest
 from unittest import mock
 
-from project.service.containers_service import get_containers
+from project.service.containers_service import get_running_containers
 
 
 class Container_Service_Test(unittest.TestCase):
@@ -28,13 +28,13 @@ class Container_Service_Test(unittest.TestCase):
     @unittest.skip("not working if docker daemon is not running")
     @mock.patch("docker.APIClient.containers", return_value=container_list)
     def test_given_a_container_running_when_call_get_containers_then_one_element_is_returned(self, mockedInspect):
-        containers = get_containers()
+        containers = get_running_containers()
         assert mockedInspect.called
         self.assertEqual(len(containers), 1)
 
     @mock.patch("docker.APIClient.containers", return_value=[])
     def test_given_no_container_running_when_call_get_containers_then_no_element_is_returned(self, mockedInspect):
-        containers = get_containers()
+        containers = get_running_containers()
         assert mockedInspect.called
         self.assertEqual(len(containers), 0)
 
