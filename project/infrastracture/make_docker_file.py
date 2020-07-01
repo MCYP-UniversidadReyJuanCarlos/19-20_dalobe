@@ -6,7 +6,7 @@ class Make_docker_file:
         image = container.image
         f = open('output/Dockerfile', mode='wt', encoding='utf-8')
         f.write("FROM " + str(image.attrs.get('RepoTags')[0]) + "\n\n")
-        f.write(dockerfile_fixes)
+        [f.write(o['content']) for o in dockerfile_fixes]
         f.close()
 
     def write_docker_file_from_static(instructions, dockerfile_fixes):
