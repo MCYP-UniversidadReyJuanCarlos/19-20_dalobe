@@ -7,7 +7,7 @@ class Fix_4_1:
         # 'RUN useradd -d /home/username -m -s /bin/bash username \nUSER username \n\n'
         return [{
             'instruction': 'RUN',
-            'content': 'RUN useradd -d /home/username -m -s /bin/bash username \n',
+            'content': '\nRUN useradd -d /home/username -m -s /bin/bash username \n',
             'value': 'useradd -d /home/username -m -s /bin/bash username \n'
         },{
             'instruction': 'USER',
@@ -22,7 +22,7 @@ class Fix_4_6:
         shutil.copyfile('templates/docker-healthcheck', 'output/docker-healthcheck')
         return [{
             'instruction': 'COPY',
-            'content': 'COPY docker-healthcheck /usr/local/bin/ \n',
+            'content': '\nCOPY docker-healthcheck /usr/local/bin/ \n',
             'value': 'docker-healthcheck /usr/local/bin/ \n'
         },
         {
