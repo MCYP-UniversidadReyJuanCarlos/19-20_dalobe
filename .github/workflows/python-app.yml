@@ -37,11 +37,17 @@ jobs:
     - name: Generate coverage report
       run: |
         coverage html
-    - name: Generate coverage badge
-      run: |
-        coverage-badge -o coverage-badge.svg
     - name: Archive code coverage results
       uses: actions/upload-artifact@v1
       with:
         name: code-coverage-report
-        path: coverage-badge.svg
+        path: htmlcov/*
+    - name: Generate coverage badge
+      run: |
+        coverage-badge -o coverage-badge.svg
+    - name: Archive coverage badge
+      uses: actions/upload-artifact@v1
+      with:
+        name: code-coverage-report
+        path: htmlcov/index.html
+
