@@ -34,5 +34,9 @@ jobs:
     - name: Test with pytest
       run: |
         coverage run --source=project -m pytest
+    - name: Generate coverage report
+      run: |
         coverage html
-        coverage-badge -o coverage.svg
+    - name: Generate coverage badge
+      run: |
+        coverage-badge -o coverage-badge.svg
