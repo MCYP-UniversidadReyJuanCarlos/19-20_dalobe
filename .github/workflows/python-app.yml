@@ -44,4 +44,4 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: code-coverage-report
-        path: htmlcov/index.html
+        path: coverage-badge.svg
