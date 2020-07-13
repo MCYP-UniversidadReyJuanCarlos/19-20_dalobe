@@ -40,3 +40,8 @@ jobs:
     - name: Generate coverage badge
       run: |
         coverage-badge -o coverage-badge.svg
+    - name: Archive code coverage results
+      uses: actions/upload-artifact@v1
+      with:
+        name: code-coverage-report
+        path: htmlcov/index.html
