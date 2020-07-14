@@ -1,0 +1,6 @@
+FROM alpine
+ENV ADMIN_USER="mark"
+RUN echo $ADMIN_USER > ./mark
+RUN unset ADMIN_USER
+ADD app.tar.gz /tmp/
+RUN pip install --requirement /tmp/requirements.txt
