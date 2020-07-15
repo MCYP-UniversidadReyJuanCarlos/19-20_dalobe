@@ -23,7 +23,8 @@ class Check_4_1:
             return {'evaluation': 'KO',
                     'code': 'DOCKERFILE_WITHOUT_USER',
                     'description': 'It is a good practice to create a user for each container image different from '
-                                   'default (root).'}
+                                   'default (root).'
+                    }
         return {'evaluation': 'OK'}
 
 
@@ -57,7 +58,8 @@ class Check_4_9:
         if evaluation:
             return {'evaluation': 'KO',
                     'code': 'DOCKERFILE_WITH_ADD_INSTRUCTION_NOT_PROPER_USED',
-                    'description': 'You should use COPY rather than ADD instructions in Dockerfiles.'}
+                    'description': 'You should use COPY rather than ADD instructions in Dockerfiles.',
+                    'line':  str([o['startline'] for o in evaluation])}
         return {'evaluation': 'OK'}
 
     def is_add_proper_used(x):
