@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.5, 3.6, 3.7, 3.8]
+        python-version: [3.6, 3.7, 3.8]
 
     steps:
     - uses: actions/checkout@v2
@@ -40,11 +40,4 @@ jobs:
         coverage run --source=project -m pytest
     - name: Generate coverage report
       run: |
-        coverage html
-    - name: Archive code coverage results
-      uses: actions/upload-artifact@v1
-      with:
-        name: code-coverage-report
-        path: htmlcov/index.html
-
-
+        coverage report -m
