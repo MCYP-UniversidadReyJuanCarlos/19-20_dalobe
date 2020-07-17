@@ -27,6 +27,14 @@ class Dockerfile_Service_Test(unittest.TestCase):
         self.assertEqual(instructions.__getitem__(1).get("instruction"), 'RUN')
         self.assertEqual(instructions.__getitem__(2).get("instruction"), 'COMMENT_INSTRUCTION')
 
+    def test_given_a_dockerfile_with_multilines_instructions_when_parse_then_multilines_are_parsed_as_a_singleline(self):
+        parser = DockerfileParser('test/resources/Dockerfile_with_multiline_instructions')
+        instructions = parser.structure()
+        result = list(filter(lambda x: x['value'] == 'apt-get update && apt-get install -y   bzr   cvs   git   mercurial   subversion', instructions))
+        self.assertEqual(result[0]['startline'],2)
+        self.assertEqual(result[0]['endline'],7)
+        self.assertEqual(len(result),1)
+
     def test_given_a_dockerfile_without_user_when_check_then_KO(self):
         result = DockerfileService.check_dockerfile(self,'test/resources/Dockerfile_test2')
         user_check_result = list(filter(lambda x: x['4_1']['evaluation'] == 'KO', result))

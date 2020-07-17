@@ -71,25 +71,47 @@ class DockerfileParser:
             return l
 
         lineno = -1
-        insnre = re.compile(r'^\s*(\S+)\s+(.*)$')  # instruction
-        commentre = re.compile(r'^\s*#')  # comment
+        insnre = re.compile(r'^\s*(\S+)\s+(.*)$')  # matched group is insn
+        contre = re.compile(r'^.*\\\s*$')          # line continues?
+        commentre = re.compile(r'^\s*#')           # line is a comment?
+
+        in_continuation = False
+        current_instruction = None
+
         for line in lines:
             lineno += 1
-            m = insnre.match(line)
-            if not m:
-                continue
+
+            # It is necessary to keep instructions and comment parsing separate,
+            # as a multi-line instruction can be interjected with comments.
             if commentre.match(line):
                 comment = create_instruction_dict(
                     instruction='COMMENT_INSTRUCTION',
                     value=clean_comment_line(line)
                 )
                 instructions.append(comment)
+
             else:
-                current_instruction = create_instruction_dict(
-                    instruction=m.groups()[0].upper(),
-                    value=rstrip_backslash(m.groups()[1])
-                )
-                current_instruction['endline'] = lineno
-                instructions.append(current_instruction)
+                if not in_continuation:
+                    m = insnre.match(line)
+                    if not m:
+                        continue
+                    current_instruction = create_instruction_dict(
+                        instruction=m.groups()[0].upper(),
+                        value=rstrip_backslash(m.groups()[1])
+                    )
+                else:
+                    current_instruction['content'] += line
+                    current_instruction['endline'] = lineno
+
+                    # pylint: disable=unsupported-assignment-operation
+                    if current_instruction['value']:
+                        current_instruction['value'] += rstrip_backslash(line)
+                    else:
+                        current_instruction['value'] = rstrip_backslash(line.lstrip())
+                    # pylint: enable=unsupported-assignment-operation
+
+                in_continuation = contre.match(line)
+                if not in_continuation and current_instruction is not None:
+                    instructions.append(current_instruction)
         dockerfile.close()
         return instructions
