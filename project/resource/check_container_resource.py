@@ -1,6 +1,9 @@
+import os
+
 from flask import Flask, jsonify, request
 from flask_cors import cross_origin
 
+from project.resource.invalid_usage import InvalidUsage
 from project.resource.payload.container_resource_payload import ContainerPayload
 from project.service.container_service import ContainerService
 from project.service.containers_service import get_running_containers
@@ -41,6 +44,10 @@ def get_check_and_fix_container(container_id):
 @cross_origin()
 def post_check_dockerfile():
     dockerfile_path = request.get_json().get('dockerFile')
+    errors = validate_dockerfile(dockerfile_path)
+    if errors is not None:
+        print(errors)
+        raise InvalidUsage(errors)
     dockerfile_service = DockerfileService()
     return jsonify({"dockerFile": dockerfile_service.check_dockerfile(dockerfile_path)})
 
@@ -51,6 +58,19 @@ def post_fix_dockerfile():
     dockerfile_path = request.get_json().get('dockerFile')
     dockerfile_service = DockerfileService()
     return jsonify({"dockerFile": dockerfile_service.check_and_fix_dockerfile(dockerfile_path)})
+
+
+@app.errorhandler(InvalidUsage)
+def handle_invalid_usage(error):
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    return response
+
+
+def validate_dockerfile(dockerfile_path):
+    if os.path.exists(dockerfile_path) and os.path.getsize(dockerfile_path) > 0:
+        return None
+    return 'File does not exist or is empty'
 
 
 if __name__ == '__main__':
