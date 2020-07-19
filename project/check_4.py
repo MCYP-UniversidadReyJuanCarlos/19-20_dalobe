@@ -59,7 +59,7 @@ class Check_4_9:
             return {'evaluation': 'KO',
                     'code': 'DOCKERFILE_WITH_ADD_INSTRUCTION_NOT_PROPER_USED',
                     'description': 'You should use COPY rather than ADD instructions in Dockerfiles.',
-                    'line':  str([o['startline'] for o in evaluation])}
+                    'line':  [o['startline'] for o in evaluation]}
         return {'evaluation': 'OK'}
 
     def is_add_proper_used(x):

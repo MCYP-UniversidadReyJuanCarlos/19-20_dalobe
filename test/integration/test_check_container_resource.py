@@ -32,7 +32,7 @@ class Test(TestCase):
 
     def test_post_given_dockerfile_without_user_when_check_then_KO(self):
         result = self.app.post('/sds/images/dockerfile/check', json={
-            'dockerFile': 'test/resources/Dockerfile_test1'})
+            'dockerFile': 'test/resources/Dockerfile_basic'})
         data = json.loads(result.data)
         user_check_result = list(filter(lambda x: x['4_1']['evaluation'] == 'KO', data["dockerFile"]))
         self.assertEqual(len(user_check_result), 1)
@@ -46,7 +46,7 @@ class Test(TestCase):
 
     def test_post_given_dockerfile_without_healthcheck_when_check_then_KO(self):
         result = self.app.post('/sds/images/dockerfile/check', json={
-            'dockerFile': 'test/resources/Dockerfile_test1'})
+            'dockerFile': 'test/resources/Dockerfile_basic'})
         data = json.loads(result.data)
         user_check_result = list(filter(lambda x: x['4_6']['evaluation'] == 'KO', data["dockerFile"]))
         self.assertEqual(len(user_check_result), 1)
@@ -91,4 +91,12 @@ class Test(TestCase):
             'dockerFile': 'test/resources/Dockerfile_proper_two_ADD_instructions'})
         data = json.loads(result.data)
         add_check_result = list(filter(lambda x: x['4_9']['evaluation'] == 'KO', data["dockerFile"]))
-        self.assertEqual(add_check_result[0]['4_9']['line'], '[5, 6]')
+        self.assertEqual(add_check_result[0]['4_9']['line'], [5, 6])
+
+    def test_post_given_dockerfile_with_ADD_when_check_then_KO_and_fix(self):
+        result = self.app.post('/sds/images/dockerfile/fix', json={
+            'dockerFile': 'test/resources/Dockerfile_wrong_ADD_usage'})
+        data = json.loads(result.data)
+        user_check_result = list(filter(lambda x: x['4_9']['evaluation'] == 'KO', data["dockerFile"]))
+        self.assertEqual(len(user_check_result), 1)
+
