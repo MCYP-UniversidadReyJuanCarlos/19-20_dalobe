@@ -31,6 +31,36 @@ class Fix_4_6:
                 'value': 'CMD ["docker-healthcheck"]\n'
             }]
 
+class Fix_4_7:
+
+    def fix_dockerfile(self, check_result, instructions):
+        lines_with_apt_get_usage = []
+        lines = check_result['line']
+        for line in lines:
+            line_with_apt_get_usage = next(filter(lambda x: x['startline'] == line, instructions))
+            lines_with_apt_get_usage.append(line_with_apt_get_usage)
+        fixed_lines = []
+        values = list(map(lambda x:x['value'], lines_with_apt_get_usage))
+        apt_get_one_line = ' && '.join(values)
+        instruction = {
+            'instruction': 'RUN',
+            'startline': lines_with_apt_get_usage[0]['startline'],
+            'endline': lines_with_apt_get_usage[0]['startline'],
+            'content': 'RUN ' + apt_get_one_line,
+            'value': apt_get_one_line
+        }
+        lines_to_remove = (lines[1:len(lines)]);
+        fixed_lines.append(instruction)
+        for i in lines_to_remove:
+            instruction_to_remove = {
+                'instruction': '',
+                'startline': i,
+                'endline': i,
+                'content': '',
+                'value': ''
+            }
+            fixed_lines.append(instruction_to_remove)
+        return fixed_lines
 
 class Fix_4_9:
 
@@ -38,9 +68,7 @@ class Fix_4_9:
         lines_with_add_wrong_usage = []
         lines = check_result['line']
         for line in lines:
-            line_with_add_wrong_usage = next(filter(lambda x: x['startline'] == line, instructions))
-            lines_with_add_wrong_usage.append(line_with_add_wrong_usage)
-
+            lines_with_add_wrong_usage.append(next(filter(lambda x: x['startline'] == line, instructions)))
         fixed_lines = []
         [fixed_lines.append(Fix_4_9.fix_line(o)) for o in lines_with_add_wrong_usage]
         return fixed_lines

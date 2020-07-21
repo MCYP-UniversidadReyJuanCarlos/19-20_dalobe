@@ -49,6 +49,17 @@ class Check_4_6:
                     'description': 'It is a good practice to create a healthcheck in the Dockerfile.'}
         return {'evaluation': 'OK'}
 
+class Check_4_7:
+
+    def evaluate_dockerfile(instructions):
+        run_apt_get_instructions = list(filter(lambda x: x['instruction'] == 'RUN' and x['value'].startswith('apt-get'), instructions))
+        if len(run_apt_get_instructions)>1:
+            return {'evaluation': 'KO',
+                    'code': 'USE_ONLY_ONE_APT-GET_INSTRUCTION',
+                    'description': 'Always combine RUN apt-get update with apt-get install in the same RUN statement.',
+                    'line':  [o['startline'] for o in run_apt_get_instructions]}
+        return {'evaluation': 'OK'}
+
 
 class Check_4_9:
 

@@ -83,6 +83,13 @@ class Dockerfile_Service_Test(unittest.TestCase):
         copy_instruction = list(filter(lambda x: x['instruction'] == 'COPY', result))
         self.assertEqual(len(copy_instruction),2)
 
+    def test_given_a_dockerfile_with_two_apt_get_when_fix_then_one_instruction_with_apt_get_is_generated(self):
+        instructions = DockerfileService.parse_dockerfile(self,'test/resources/Dockerfile_with_two_apt-get')
+        check_result = DockerfileService.evaluate_dockerfile(self, instructions)
+        result = DockerfileService.get_dockerfile_fixes(self, check_result, instructions)
+        apt_get_instructions = list(filter(lambda x: x['instruction'] == 'COPY', result))
+        self.assertEqual(len(apt_get_instructions),1)
+
 
 if __name__ == '__main__':
     unittest.main()

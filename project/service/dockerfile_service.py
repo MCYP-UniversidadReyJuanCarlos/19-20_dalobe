@@ -1,7 +1,7 @@
 import re
 
-from project.check_4 import Check_4_1, Check_4_6, Check_4_9
-from project.fix_4 import Fix_4_1, Fix_4_6, Fix_4_9
+from project.check_4 import Check_4_1, Check_4_6, Check_4_9, Check_4_7
+from project.fix_4 import Fix_4_1, Fix_4_6, Fix_4_9, Fix_4_7
 from project.infrastracture.make_dockerfile import Make_docker_file
 
 
@@ -26,6 +26,7 @@ class DockerfileService:
     def evaluate_dockerfile(self, instructions):
         return [{'4_1': Check_4_1.evaluate_dockerfile(instructions),
                  '4_6': Check_4_6.evaluate_dockerfile(instructions),
+                 '4_7': Check_4_7.evaluate_dockerfile(instructions),
                  '4_9': Check_4_9.evaluate_dockerfile(instructions),
                  }]
 
@@ -38,6 +39,10 @@ class DockerfileService:
         healthcheck_check_result = check_result[0]['4_6']
         if healthcheck_check_result['evaluation'] == 'KO':
             [fix_dockerfile.append(o) for o in Fix_4_6.fix_dockerfile(self)]
+
+        add_check_result = check_result[0]['4_7']
+        if add_check_result['evaluation'] == 'KO':
+            [fix_dockerfile.append(o) for o in Fix_4_7.fix_dockerfile(self, add_check_result, instructions)]
 
         add_check_result = check_result[0]['4_9']
         if add_check_result['evaluation'] == 'KO':
