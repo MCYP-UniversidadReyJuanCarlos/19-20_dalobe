@@ -1,1 +1,1 @@
-web gunicorn project.resource.check_container_resource:app
+web: gunicorn project.resource.check_container_resource:app
