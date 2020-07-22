@@ -5,5 +5,4 @@ WORKDIR /app
 COPY requirements.txt /app
 RUN pip3 install -r requirements.txt
 COPY . /app
-EXPOSE 8000
-ENTRYPOINT ["gunicorn", "-b", "0.0.0.0:8000", "project.resource.check_container_resource:app"]
+ENTRYPOINT ["gunicorn", "project.resource.check_container_resource:app"]
