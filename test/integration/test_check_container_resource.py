@@ -13,33 +13,26 @@ class Test(TestCase):
         result = self.app.get('/sds/health')
         print(result)
 
-    def test_post_given_empty_dockerfile_when_check_then_bad_request(self):
-        result = self.app.post('/sds/images/dockerfile/check', json={
-            'dockerFile': 'test/resources/Dockerfile_empty'})
-        self.assertEqual(result.status_code, 400)
-
-    def test_post_given_empty_dockerfile_when_check_then_bad_request(self):
-        result = self.app.post('/sds/images/dockerfile/check', json={
-            'dockerFile': 'test/resources/Dockerfile_not_exists'})
-        self.assertEqual(result.status_code, 400)
-
     def test_post_given_dockerfile_with_user_when_check_then_OK(self):
+        file = open('test/resources/Dockerfile_with_user', 'r')
         result = self.app.post('/sds/images/dockerfile/check', json={
-            'dockerFile': 'test/resources/Dockerfile_with_user'})
+            'dockerFile': file.read()})
         data = json.loads(result.data)
         user_check_result = list(filter(lambda x: x['4_1']['evaluation'] == 'OK', data["dockerFile"]))
         self.assertEqual(len(user_check_result), 1)
 
     def test_post_given_dockerfile_without_user_when_check_then_KO(self):
+        file = open('test/resources/Dockerfile_basic', 'r')
         result = self.app.post('/sds/images/dockerfile/check', json={
-            'dockerFile': 'test/resources/Dockerfile_basic'})
+            'dockerFile': file.read()})
         data = json.loads(result.data)
         user_check_result = list(filter(lambda x: x['4_1']['evaluation'] == 'KO', data["dockerFile"]))
         self.assertEqual(len(user_check_result), 1)
 
     def test_post_given_dockerfile_with_healthcheck_when_check_then_OK(self):
+        file = open('test/resources/Dockerfile_with_user', 'r')
         result = self.app.post('/sds/images/dockerfile/check', json={
-            'dockerFile': 'test/resources/Dockerfile_with_user'})
+            'dockerFile': file.read()})
         data = json.loads(result.data)
         user_check_result = list(filter(lambda x: x['4_1']['evaluation'] == 'OK', data["dockerFile"]))
         self.assertEqual(len(user_check_result), 1)
@@ -52,8 +45,9 @@ class Test(TestCase):
         self.assertEqual(len(user_check_result), 1)
 
     def test_post_given_dockerfile_with_ADD_when_check_then_KO(self):
+        file = open('test/resources/Dockerfile_wrong_ADD_usage', 'r')
         result = self.app.post('/sds/images/dockerfile/check', json={
-            'dockerFile': 'test/resources/Dockerfile_wrong_ADD_usage'})
+            'dockerFile': file.read()})
         data = json.loads(result.data)
         user_check_result = list(filter(lambda x: x['4_9']['evaluation'] == 'KO', data["dockerFile"]))
         self.assertEqual(len(user_check_result), 1)
@@ -80,51 +74,57 @@ class Test(TestCase):
         self.assertEqual(len(add_check_result), 1)
 
     def test_post_given_dockerfile_with_two_ADD_when_check_then_KO(self):
+        file = open('test/resources/Dockerfile_proper_two_ADD_instructions', 'r')
         result = self.app.post('/sds/images/dockerfile/check', json={
-            'dockerFile': 'test/resources/Dockerfile_proper_two_ADD_instructions'})
+            'dockerFile': file.read()})
         data = json.loads(result.data)
         add_check_result = list(filter(lambda x: x['4_9']['evaluation'] == 'KO', data["dockerFile"]))
         self.assertEqual(len(add_check_result), 1)
 
     def test_post_given_dockerfile_with_wrong_ADD_when_check_then_line_is_returned(self):
+        file = open('test/resources/Dockerfile_proper_two_ADD_instructions', 'r')
         result = self.app.post('/sds/images/dockerfile/check', json={
-            'dockerFile': 'test/resources/Dockerfile_proper_two_ADD_instructions'})
+            'dockerFile': file.read()})
         data = json.loads(result.data)
         add_check_result = list(filter(lambda x: x['4_9']['evaluation'] == 'KO', data["dockerFile"]))
         self.assertEqual(add_check_result[0]['4_9']['line'], [5, 6])
 
     def test_post_given_dockerfile_with_ADD_when_check_and_fix_then_KO_and_fix(self):
+        file = open('test/resources/Dockerfile_wrong_ADD_usage', 'r')
         result = self.app.post('/sds/images/dockerfile/fix', json={
-            'dockerFile': 'test/resources/Dockerfile_wrong_ADD_usage'})
+            'dockerFile': file.read()})
         data = json.loads(result.data)
         user_check_result = list(filter(lambda x: x['4_9']['evaluation'] == 'KO', data["dockerFile"]))
         self.assertEqual(len(user_check_result), 1)
 
     def test_post_given_dockerfile_with_two_apt_get_when_check_then_KO(self):
+        file = open('test/resources/Dockerfile_with_two_apt-get', 'r')
         result = self.app.post('/sds/images/dockerfile/fix', json={
-            'dockerFile': 'test/resources/Dockerfile_with_two_apt-get'})
+            'dockerFile': file.read()})
         data = json.loads(result.data)
         apt_get_check_result = list(filter(lambda x: x['4_7']['evaluation'] == 'KO', data["dockerFile"]))
         self.assertEqual(len(apt_get_check_result), 1)
 
     def test_post_given_dockerfile_with_no_apt_get_when_check_then_OK(self):
+        file = open('test/resources/Dockerfile_basic', 'r')
         result = self.app.post('/sds/images/dockerfile/check', json={
-            'dockerFile': 'test/resources/Dockerfile_basic'})
+            'dockerFile': file.read()})
         data = json.loads(result.data)
         apt_get_check_result = list(filter(lambda x: x['4_7']['evaluation'] == 'OK', data["dockerFile"]))
         self.assertEqual(len(apt_get_check_result), 1)
 
     def test_post_given_dockerfile_with_proper_apt_get_when_check_then_OK(self):
+        file = open('test/resources/Dockerfile_with_proper_apt-get_usage', 'r')
         result = self.app.post('/sds/images/dockerfile/check', json={
-            'dockerFile': 'test/resources/Dockerfile_with_'
-                          'proper_apt-get_usage'})
+            'dockerFile': file.read()})
         data = json.loads(result.data)
         apt_get_check_result = list(filter(lambda x: x['4_7']['evaluation'] == 'OK', data["dockerFile"]))
         self.assertEqual(len(apt_get_check_result), 1)
 
     def test_post_given_dockerfile_with_wrong_aptget_usage_when_fix_and_check_then_KO_and_fix(self):
+        file = open('test/resources/Dockerfile_with_two_apt-get', 'r')
         result = self.app.post('/sds/images/dockerfile/fix', json={
-            'dockerFile': 'test/resources/Dockerfile_with_two_apt-get'})
+            'dockerFile': file.read()})
         data = json.loads(result.data)
         user_check_result = list(filter(lambda x: x['4_7']['evaluation'] == 'KO', data["dockerFile"]))
         self.assertEqual(len(user_check_result), 1)

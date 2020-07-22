@@ -43,20 +43,22 @@ def get_check_and_fix_container(container_id):
 @app.route('/sds/images/dockerfile/check', methods=['POST'])
 @cross_origin()
 def post_check_dockerfile():
-    dockerfile_path = request.get_json().get('dockerFile')
-    errors = validate_dockerfile(dockerfile_path)
-    if errors is not None:
-        print(errors)
-        raise InvalidUsage(errors)
     dockerfile_service = DockerfileService()
-    return jsonify({"dockerFile": dockerfile_service.check_dockerfile(dockerfile_path)})
+    dockerfile = request.get_json().get('dockerFile')
+    dockerfile_path = dockerfile_service.write_dockerfile(dockerfile)
+    # errors = validate_dockerfile(dockerfile_path)
+    # if errors is not None:
+    #     print(errors)
+    #     raise InvalidUsage(errors)
 
+    return jsonify({"dockerFile": dockerfile_service.check_dockerfile(dockerfile_path)})
 
 @app.route('/sds/images/dockerfile/fix', methods=['POST'])
 @cross_origin()
 def post_fix_dockerfile():
-    dockerfile_path = request.get_json().get('dockerFile')
     dockerfile_service = DockerfileService()
+    dockerfile = request.get_json().get('dockerFile')
+    dockerfile_path = dockerfile_service.write_dockerfile(dockerfile)
     return jsonify({"dockerFile": dockerfile_service.check_and_fix_dockerfile(dockerfile_path)})
 
 
@@ -65,12 +67,6 @@ def handle_invalid_usage(error):
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
     return response
-
-
-def validate_dockerfile(dockerfile_path):
-    if os.path.exists(dockerfile_path) and os.path.getsize(dockerfile_path) > 0:
-        return None
-    return 'File does not exist or is empty'
 
 
 if __name__ == '__main__':
