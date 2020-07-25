@@ -3,6 +3,7 @@ import os
 from flask import Flask, jsonify, request
 from flask_cors import cross_origin
 
+from project.infrastracture.make_dockerfile import write_dockerfile
 from project.resource.invalid_usage import InvalidUsage
 from project.resource.payload.container_resource_payload import ContainerPayload
 from project.service.container_service import ContainerService
@@ -43,21 +44,27 @@ def get_check_and_fix_container(container_id):
 @app.route('/sds/images/dockerfile/check', methods=['POST'])
 @cross_origin()
 def post_check_dockerfile():
-    dockerfile_path = request.get_json().get('dockerFile')
+    dockerfile_service = DockerfileService()
+    dockerfile = request.get_json().get('dockerFile')
+    dockerfile_path = write_dockerfile(dockerfile)
     errors = validate_dockerfile(dockerfile_path)
     if errors is not None:
         print(errors)
         raise InvalidUsage(errors)
-    dockerfile_service = DockerfileService()
-    return jsonify({"dockerFile": dockerfile_service.check_dockerfile(dockerfile_path)})
+    evaluation = dockerfile_service.check_dockerfile(dockerfile_path)
+    os.remove(dockerfile_path)
+    return jsonify({"dockerFile": evaluation})
 
 
 @app.route('/sds/images/dockerfile/fix', methods=['POST'])
 @cross_origin()
 def post_fix_dockerfile():
-    dockerfile_path = request.get_json().get('dockerFile')
     dockerfile_service = DockerfileService()
-    return jsonify({"dockerFile": dockerfile_service.check_and_fix_dockerfile(dockerfile_path)})
+    dockerfile = request.get_json().get('dockerFile')
+    dockerfile_path = write_dockerfile(dockerfile)
+    evaluation = dockerfile_service.check_dockerfile(dockerfile_path)
+    os.remove(dockerfile_path)
+    return jsonify({"dockerFile": evaluation})
 
 
 @app.errorhandler(InvalidUsage)

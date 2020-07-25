@@ -2,7 +2,7 @@ import re
 
 from project.check_4 import Check_4_1, Check_4_6, Check_4_9, Check_4_7
 from project.fix_4 import Fix_4_1, Fix_4_6, Fix_4_9, Fix_4_7
-from project.infrastracture.make_dockerfile import Make_docker_file
+from project.infrastracture.make_dockerfile import Make_dockerfile
 
 
 class DockerfileService:
@@ -15,7 +15,7 @@ class DockerfileService:
         instructions = DockerfileService.parse_dockerfile(self, dockerfile_path)
         check_result = DockerfileService.evaluate_dockerfile(self, instructions)
         dockerfile_fixes = DockerfileService.get_dockerfile_fixes(self, check_result, instructions)
-        Make_docker_file.write_docker_file_from_static(instructions, dockerfile_fixes)
+        Make_dockerfile.write_docker_file_from_static(instructions, dockerfile_fixes)
         return check_result
 
     def parse_dockerfile(self, dockerfile_path):
