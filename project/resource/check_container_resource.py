@@ -3,6 +3,7 @@ import os
 from flask import Flask, jsonify, request
 from flask_cors import cross_origin
 
+from project.infrastracture.make_dockerfile import write_dockerfile
 from project.resource.invalid_usage import InvalidUsage
 from project.resource.payload.container_resource_payload import ContainerPayload
 from project.service.container_service import ContainerService
@@ -30,7 +31,7 @@ def get_containers():
 @cross_origin()
 def get_check_container(container_id):
     container_service = ContainerService()
-    return jsonify({"result": container_service.check_container(container_id)}), 200
+    return jsonify({"result": container_service.checxk_container(container_id)}), 200
 
 
 @app.route('/sds/containers/<container_id>/fix')
@@ -45,21 +46,25 @@ def get_check_and_fix_container(container_id):
 def post_check_dockerfile():
     dockerfile_service = DockerfileService()
     dockerfile = request.get_json().get('dockerFile')
-    dockerfile_path = dockerfile_service.write_dockerfile(dockerfile)
-    # errors = validate_dockerfile(dockerfile_path)
-    # if errors is not None:
-    #     print(errors)
-    #     raise InvalidUsage(errors)
+    dockerfile_path = write_dockerfile(dockerfile)
+    errors = validate_dockerfile(dockerfile_path)
+    if errors is not None:
+        print(errors)
+        raise InvalidUsage(errors)
+    evaluation = dockerfile_service.check_dockerfile(dockerfile_path)
+    os.remove(dockerfile_path)
+    return jsonify({"dockerFile": evaluation})
 
-    return jsonify({"dockerFile": dockerfile_service.check_dockerfile(dockerfile_path)})
 
 @app.route('/sds/images/dockerfile/fix', methods=['POST'])
 @cross_origin()
 def post_fix_dockerfile():
     dockerfile_service = DockerfileService()
     dockerfile = request.get_json().get('dockerFile')
-    dockerfile_path = dockerfile_service.write_dockerfile(dockerfile)
-    return jsonify({"dockerFile": dockerfile_service.check_and_fix_dockerfile(dockerfile_path)})
+    dockerfile_path = write_dockerfile(dockerfile)
+    evaluation = dockerfile_service.check_dockerfile(dockerfile_path)
+    os.remove(dockerfile_path)
+    return jsonify({"dockerFile": evaluation})
 
 
 @app.errorhandler(InvalidUsage)
@@ -67,6 +72,12 @@ def handle_invalid_usage(error):
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
     return response
+
+
+def validate_dockerfile(dockerfile_path):
+    if os.path.exists(dockerfile_path) and os.path.getsize(dockerfile_path) > 0:
+        return None
+    return 'File does not exist or is empty'
 
 
 if __name__ == '__main__':

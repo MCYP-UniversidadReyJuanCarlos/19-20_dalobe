@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from project.infrastracture.make_dockerfile import Make_docker_file
+from project.infrastracture.make_dockerfile import Make_dockerfile
 
 
 class Test_make_dockerfile(TestCase):
@@ -22,7 +22,7 @@ class Test_make_dockerfile(TestCase):
                         {'instruction': 'COPY', 'startline': 6, 'endline': 6, 'content': 'COPY . /tmp/', 'value': '. '
                                                                                                                 '/tmp/'}]
 
-        proposed_dockerfile = Make_docker_file.generate_proposed_dockerfile(instructions, dockerfile_fixes)
+        proposed_dockerfile = Make_dockerfile.generate_proposed_dockerfile(instructions, dockerfile_fixes)
         self.assertEqual(len(proposed_dockerfile), 7)
         self.assertEqual(proposed_dockerfile[6]['instruction'],'COPY')
 
