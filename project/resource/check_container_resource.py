@@ -31,7 +31,7 @@ def get_containers():
 @cross_origin()
 def get_check_container(container_id):
     container_service = ContainerService()
-    return jsonify({"result": container_service.checxk_container(container_id)}), 200
+    return jsonify({"result": container_service.check_container(container_id)}), 200
 
 
 @app.route('/sds/containers/<container_id>/fix')
