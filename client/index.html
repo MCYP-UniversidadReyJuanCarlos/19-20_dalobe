@@ -1,0 +1,61 @@
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Sample illustrating the use of Fetch API POST.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>SDS API check client</title>
+    </head>
+
+  <body>
+
+    <h1>Check your Dockerfile</h1>
+    <h3>Background</h3>
+    <p>This sample shows how the Fetch API can make POST requests.</p>
+
+    <textarea autofocus="" id="gist" cols="100" rows="10">introduce your Dockerfile here ...
+    </textarea>
+    <p><button>Create new GitHub Gist</button></p>
+
+    <h3>Live Output</h3>
+    <div id="output" class="output">
+      <div id="content"></div>
+      <div id="evaluation">
+        <textarea id="checks" cols="100" rows="10"></textarea>
+      </div>
+    </div>
+
+  <script>function createDockefileRequest(opts) {
+
+        const options = {
+            method: 'POST',
+            body: JSON.stringify(opts),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+
+        fetch('https://sds-application.herokuapp.com/sds/images/dockerfile/check', options)
+            .then(res => res.json())
+            .then(json => {
+                // Display result
+                document.getElementById("checks").value = JSON.stringify(json);
+        });
+    }
+
+    function submitDockerfile() {
+      var content = document.querySelector('textarea').value;
+      if (content) {
+        createDockefileRequest({
+             dockerfile: content
+        });
+      } else {
+        alert('Please enter Dockerfile content to check.');
+      }
+    }
+
+    var submitBtn = document.querySelector('button');
+    submitBtn.addEventListener('click', submitDockerfile);
+</script>
+
+</body></html>
