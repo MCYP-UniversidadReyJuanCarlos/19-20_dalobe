@@ -84,6 +84,5 @@ def validate_dockerfile(dockerfile_path):
 
 if __name__ == '__main__':
     app.debug = True
-    CORS(app)
     app.run()
 
