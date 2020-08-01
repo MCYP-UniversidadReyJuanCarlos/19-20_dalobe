@@ -25,7 +25,7 @@ class Make_dockerfile:
                      if 'startline' in o and o['startline'] == instruction['startline'])
             else:
                 proposed_dockerfile_instructions.append(instruction)
-            [proposed_dockerfile_instructions.append(o) for o in dockerfile_fixes if 'startline' not in o]
+        [proposed_dockerfile_instructions.append(o) for o in dockerfile_fixes if 'startline' not in o]
         return proposed_dockerfile_instructions
 
     def get_lines_with_fixes(dockerfile_fixes):
