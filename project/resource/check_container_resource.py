@@ -55,7 +55,7 @@ def post_check_dockerfile():
         raise InvalidUsage(errors)
     evaluation = dockerfile_service.check_dockerfile(dockerfile_path)
     os.remove(dockerfile_path)
-    return jsonify({(DOCKER_FILE): evaluation})
+    return jsonify(evaluation)
 
 
 @app.route('/sds/images/dockerfile/fix', methods=['POST'])
@@ -64,9 +64,9 @@ def post_fix_dockerfile():
     dockerfile_service = DockerfileService()
     dockerfile = request.get_json().get(DOCKER_FILE)
     dockerfile_path = write_dockerfile(dockerfile)
-    evaluation = dockerfile_service.check_dockerfile(dockerfile_path)
+    evaluation = dockerfile_service.check_and_fix_dockerfile(dockerfile_path)
     os.remove(dockerfile_path)
-    return jsonify({DOCKER_FILE: evaluation})
+    return jsonify(evaluation)
 
 
 @app.errorhandler(InvalidUsage)

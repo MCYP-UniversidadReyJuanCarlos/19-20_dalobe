@@ -15,6 +15,7 @@ class Make_dockerfile:
         proposed_dockerfile_instructions = Make_dockerfile.generate_proposed_dockerfile(instructions, dockerfile_fixes)
         [f.write(o['content']) for o in proposed_dockerfile_instructions]
         f.close()
+        return proposed_dockerfile_instructions
 
     def generate_proposed_dockerfile(instructions, dockerfile_fixes):
         proposed_dockerfile_instructions = []

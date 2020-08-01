@@ -1,0 +1,9 @@
+FROM alpine:3.4
+
+RUN useradd -d /home/username -m -s /bin/bash username
+USER username
+
+RUN apk update
+# XSS!
+RUN <a href="javascript:alert('unsafe');">click here</a>
+RUN apk add curl

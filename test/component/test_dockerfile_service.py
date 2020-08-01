@@ -37,18 +37,15 @@ class Dockerfile_Service_Test(unittest.TestCase):
 
     def test_given_a_dockerfile_without_user_when_check_then_KO(self):
         result = DockerfileService.check_dockerfile(self,'test/resources/Dockerfile_basic_with_comments')
-        user_check_result = list(filter(lambda x: x['4_1']['evaluation'] == 'KO', result))
-        self.assertEqual(len(user_check_result),1)
+        self.assertEqual(result['dockerfile_evaluation']['4_1']['evaluation'],'KO')
 
     def test_given_a_dockerfile_with_user_when_check_then_OK(self):
         result = DockerfileService.check_dockerfile(self,'test/resources/Dockerfile_with_user')
-        user_check_result = list(filter(lambda x: x['4_1']['evaluation'] == 'OK', result))
-        self.assertEqual(len(user_check_result),1)
+        self.assertEqual(result['dockerfile_evaluation']['4_1']['evaluation'], 'OK')
 
     def test_given_a_dockerfile_without_user_when_check_and_fix_then_KO(self):
         result = DockerfileService.check_and_fix_dockerfile(self,'test/resources/Dockerfile_basic_with_comments')
-        user_check_result = list(filter(lambda x: x['4_1']['evaluation'] == 'KO', result))
-        self.assertEqual(len(user_check_result),1)
+        self.assertEqual(result[0]['dockerfile_evaluation']['4_1']['evaluation'], 'KO')
 
     def test_given_a_dockerfile_with_user_when_check_and_fix_then_OK(self):
         result = DockerfileService.check_and_fix_dockerfile(self,'test/resources/Dockerfile_with_user')
@@ -66,8 +63,7 @@ class Dockerfile_Service_Test(unittest.TestCase):
 
     def test_given_a_dockerfile_with_user_when_check_and_fix_then_OK(self):
         result = DockerfileService.check_and_fix_dockerfile(self,'test/resources/Dockerfile_with_user')
-        user_check_result = list(filter(lambda x: x['4_1']['evaluation'] == 'OK', result))
-        self.assertEqual(len(user_check_result),1)
+        self.assertEqual(result[0]['dockerfile_evaluation']['4_1']['evaluation'],'OK')
 
     def test_given_a_dockerfile_without_healthcheck_when_fix_then_instruction_with_healthcheck_is_generated(self):
         instructions = DockerfileService.parse_dockerfile(self,'test/resources/Dockerfile_basic_with_comments')

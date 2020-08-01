@@ -4,19 +4,27 @@ from project.check_4 import Check_4_1, Check_4_6, Check_4_9, Check_4_7
 from project.fix_4 import Fix_4_1, Fix_4_6, Fix_4_9, Fix_4_7
 from project.infrastracture.make_dockerfile import Make_dockerfile
 
+PROPOSED_DOCKERFILE = 'proposed_dockerfile'
+
+DOCKERFILE_EVALUATION = 'dockerfile_evaluation'
+
 
 class DockerfileService:
 
     def check_dockerfile(self, dockerfile_path):
         instructions = DockerfileService.parse_dockerfile(self, dockerfile_path)
-        return DockerfileService.evaluate_dockerfile(self, instructions)
+        check_result = DockerfileService.evaluate_dockerfile(self, instructions)
+        result_dict = {DOCKERFILE_EVALUATION: check_result}
+        return result_dict
 
     def check_and_fix_dockerfile(self, dockerfile_path):
         instructions = DockerfileService.parse_dockerfile(self, dockerfile_path)
         check_result = DockerfileService.evaluate_dockerfile(self, instructions)
         dockerfile_fixes = DockerfileService.get_dockerfile_fixes(self, check_result, instructions)
-        Make_dockerfile.write_docker_file_from_static(instructions, dockerfile_fixes)
-        return check_result
+        proposed_dockerfile_instructions = Make_dockerfile.write_docker_file_from_static(instructions, dockerfile_fixes)
+        result_dict = {DOCKERFILE_EVALUATION: check_result}, {
+            PROPOSED_DOCKERFILE: ''.join(list(map(lambda x: x['content'], proposed_dockerfile_instructions)))}
+        return result_dict
 
     def parse_dockerfile(self, dockerfile_path):
         parser = DockerfileParser(dockerfile_path)
@@ -24,27 +32,27 @@ class DockerfileService:
         return instructions
 
     def evaluate_dockerfile(self, instructions):
-        return [{'4_1': Check_4_1.evaluate_dockerfile(instructions),
+        return {'4_1': Check_4_1.evaluate_dockerfile(instructions),
                  '4_6': Check_4_6.evaluate_dockerfile(instructions),
                  '4_7': Check_4_7.evaluate_dockerfile(instructions),
                  '4_9': Check_4_9.evaluate_dockerfile(instructions),
-                 }]
+                 }
 
     def get_dockerfile_fixes(self, check_result, instructions=None):
         fix_dockerfile = []
-        user_check_result = check_result[0]['4_1']
+        user_check_result = check_result['4_1']
         if user_check_result['evaluation'] == 'KO':
             [fix_dockerfile.append(o) for o in Fix_4_1.fix_dockerfile(self)]
 
-        healthcheck_check_result = check_result[0]['4_6']
+        healthcheck_check_result = check_result['4_6']
         if healthcheck_check_result['evaluation'] == 'KO':
             [fix_dockerfile.append(o) for o in Fix_4_6.fix_dockerfile(self)]
 
-        add_check_result = check_result[0]['4_7']
+        add_check_result = check_result['4_7']
         if add_check_result['evaluation'] == 'KO':
             [fix_dockerfile.append(o) for o in Fix_4_7.fix_dockerfile(self, add_check_result, instructions)]
 
-        add_check_result = check_result[0]['4_9']
+        add_check_result = check_result['4_9']
         if add_check_result['evaluation'] == 'KO':
             [fix_dockerfile.append(o) for o in Fix_4_9.fix_dockerfile(self, add_check_result, instructions)]
 
@@ -83,8 +91,8 @@ class DockerfileParser:
 
         lineno = -1
         insnre = re.compile(r'^\s*(\S+)\s+(.*)$')  # matched group is insn
-        contre = re.compile(r'^.*\\\s*$')          # line continues?
-        commentre = re.compile(r'^\s*#')           # line is a comment?
+        contre = re.compile(r'^.*\\\s*$')  # line continues?
+        commentre = re.compile(r'^\s*#')  # line is a comment?
 
         in_continuation = False
         current_instruction = None
