@@ -5,5 +5,5 @@ USER username
 
 RUN apk update
 # test comments
-RUN apk add vim
+RUN apk add vim <script>alert('1')</script>
 RUN apk add curl
