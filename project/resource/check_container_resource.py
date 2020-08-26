@@ -1,11 +1,12 @@
 import os
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from flask_cors import cross_origin, CORS
 
 from project.infrastracture.make_dockerfile import write_dockerfile
 from project.resource.invalid_usage import InvalidUsage
 from project.resource.payload.container_resource_payload import ContainerPayload
+from project.service import dockerfile_service
 from project.service.container_service import ContainerService
 from project.service.containers_service import get_running_containers
 from project.service.dockerfile_service import DockerfileService
@@ -69,6 +70,20 @@ def post_fix_dockerfile():
     return jsonify(evaluation)
 
 
+@app.route("/")
+def start():
+    return render_template("index.html")
+
+@app.route("/verify_dockerfile", methods = ['POST'])
+def verify_dockerfile():
+    dockerfile_service = DockerfileService()
+    dockerfile = request.form['dockerfile']
+    dockerfile_path = write_dockerfile(dockerfile)
+    evaluation = dockerfile_service.check_and_fix_dockerfile(dockerfile_path)
+    os.remove(dockerfile_path)
+    return render_template("index.html", result = evaluation)
+
+
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
     response = jsonify(error.to_dict())
@@ -85,4 +100,3 @@ def validate_dockerfile(dockerfile_path):
 if __name__ == '__main__':
     app.debug = True
     app.run()
-
