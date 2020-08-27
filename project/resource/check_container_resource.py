@@ -74,14 +74,15 @@ def post_fix_dockerfile():
 def start():
     return render_template("index.html")
 
-@app.route("/verify_dockerfile", methods = ['POST'])
+
+@app.route("/verify_dockerfile", methods=['POST'])
 def verify_dockerfile():
     dockerfile_service = DockerfileService()
     dockerfile = request.form['dockerfile']
     dockerfile_path = write_dockerfile(dockerfile)
     evaluation = dockerfile_service.check_and_fix_dockerfile(dockerfile_path)
     os.remove(dockerfile_path)
-    return render_template("index.html", result = evaluation)
+    return render_template("index.html", result=evaluation)
 
 
 @app.errorhandler(InvalidUsage)
