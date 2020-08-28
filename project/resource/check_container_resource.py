@@ -2,6 +2,7 @@ import os
 
 from flask import Flask, jsonify, request, render_template
 from flask_cors import cross_origin, CORS
+from jinja2 import Environment, PackageLoader, select_autoescape, FileSystemLoader
 
 from project.infrastracture.make_dockerfile import write_dockerfile
 from project.resource.invalid_usage import InvalidUsage
@@ -14,6 +15,11 @@ from project.service.dockerfile_service import DockerfileService
 DOCKER_FILE = "dockerfile"
 
 app = Flask(__name__)
+
+env = Environment(
+    loader=FileSystemLoader(searchpath="project/resource/templates/"),
+    autoescape=select_autoescape(['html'])
+)
 
 
 @app.route("/sds/health")
@@ -82,7 +88,8 @@ def verify_dockerfile():
     dockerfile_path = write_dockerfile(dockerfile)
     evaluation = dockerfile_service.check_and_fix_dockerfile(dockerfile_path)
     os.remove(dockerfile_path)
-    return render_template("index.html", result=evaluation)
+    template = env.get_template('index.html')
+    return template.render(result=evaluation)
 
 
 @app.errorhandler(InvalidUsage)

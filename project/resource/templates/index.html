@@ -44,15 +44,16 @@
          <div class="row">
             <div class="col-lg-12">
                <div class="panel panel-default">
-                  <div class="panel-heading">Check your Dockerfile for security vulnerabilities</div>
+                  <div class="panel-heading">Check your Dockerfile for vulnerabilities</div>
                   <div class="panel-body">
                      <div class="col-md-6">
+                        <label>Introduce your Dockerfile and check it</label>
                         <form method="post" action="/verify_dockerfile" enctype="multipart/form-data">
-                           <label>Introduce your Dockerfile and check the report and the proposal changes on it</label>
-                            <textarea autofocus="" id="dockerfile" placeholder="dockerfile" name="dockerfile" cols="100" rows="10">introduce your Dockerfile here ...</textarea>
+                           <textarea autofocus="" id="dockerfile" placeholder="dockerfile" name="dockerfile" cols="60" rows="20">introduce your Dockerfile here ...</textarea>
+                           <br>
                            <button class="btn btn-primary" type="submit">verify dockerfile</button>
+                        </form>
                      </div>
-                     </form>
                   </div>
                </div>
             </div>
@@ -97,7 +98,7 @@
                   <div class="panel-body">
                      <div class="col-md-6">
                         {% if result %}
-                        <textarea cols="100" rows="10">{{ result[1]['proposed_dockerfile'] }}</textarea>
+                        <textarea cols="60" rows="20">{{ result[1]['proposed_dockerfile'] }}</textarea>
                         {% endif %}
                      </div>
                   </div>
